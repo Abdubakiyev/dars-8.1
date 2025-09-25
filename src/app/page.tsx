@@ -1,6 +1,41 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function HomePage() {
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const name = localStorage.getItem("name");
+    const email = localStorage.getItem("email");
+
+    if (token) {
+      setUser({ name: name || "", email: email || "" });
+    }
+  }, []);
+
+  if (user) {
+    return (
+      <main className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-3xl font-bold mb-4">🏠 Home Page</h1>
+        <p>👤 Name: {user.name}</p>
+        <p>📧 Email: {user.email}</p>
+
+        <button
+          onClick={() => {
+            localStorage.clear();
+            setUser(null);
+          }}
+          className="mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Logout
+        </button>
+      </main>
+    );
+  }
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Asosiy Sahifa</h1>

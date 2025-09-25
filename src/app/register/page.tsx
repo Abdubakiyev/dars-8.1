@@ -50,7 +50,7 @@ export default function RegisterPage() {
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:4000/auth/google";
-  };
+  };  
 
   const handleGithubLogin = () => {
     window.location.href = "http://localhost:4000/auth/github";
