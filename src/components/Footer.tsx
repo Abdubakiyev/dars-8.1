@@ -6,12 +6,10 @@ export default function Footer() {
   return (
     <footer className="w-full bg-gray-900 text-gray-300 py-6 mt-10">
       <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Left Side - Copyright */}
         <p className="text-sm">
           © {new Date().getFullYear()} MyApp. All rights reserved.
         </p>
 
-        {/* Center - Nav Links */}
         <nav className="flex gap-6 text-sm">
           <Link href="/" className="hover:text-white transition">
             Home
@@ -27,7 +25,6 @@ export default function Footer() {
           </Link>
         </nav>
 
-        {/* Right Side - Socials */}
         <div className="flex gap-4">
           <a
             href="https://twitter.com"

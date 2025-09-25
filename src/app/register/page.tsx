@@ -1,9 +1,15 @@
 "use client";
 
+import axios from "axios";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // ⬅️ qo‘shildi
 import { regions, districts, District } from "@/app/store/location-data";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 
 export default function RegisterPage() {
+  const router = useRouter(); // ⬅️ qo‘shildi
+
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -23,10 +29,32 @@ export default function RegisterPage() {
 
   const availableDistricts: District[] = districts[form.region] || [];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(JSON.stringify(form, null, 2)); 
-  };  
+    try {
+      const res = await axios.post("http://localhost:4000/auth/register", form, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("✅ Register success:", res.data);
+
+
+      router.push("/");
+    } catch (err: any) {
+      alert("❌ Error: " + (err.response?.data?.message || err.message));
+      console.error("Error:", err);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:4000/auth/google";
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = "http://localhost:4000/auth/github";
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -99,6 +127,35 @@ export default function RegisterPage() {
             Register
           </button>
         </form>
+
+        {/* Divider */}
+        <div className="flex items-center my-4">
+          <hr className="flex-1 border-gray-300" />
+          <span className="px-2 text-gray-500 text-sm">or</span>
+          <hr className="flex-1 border-gray-300" />
+        </div>
+
+        <div className="space-y-3">
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-2 border rounded py-2 hover:bg-gray-50"
+          >
+            <FcGoogle className="text-xl" />
+            <span className="text-gray-700 font-medium">
+              Continue with Google
+            </span>
+          </button>
+
+          <button
+            onClick={handleGithubLogin}
+            className="w-full flex items-center justify-center gap-2 border rounded py-2 hover:bg-gray-50"
+          >
+            <FaGithub className="text-xl text-gray-900" />
+            <span className="text-gray-700 font-medium">
+              Continue with GitHub
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );

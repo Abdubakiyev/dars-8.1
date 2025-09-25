@@ -2,21 +2,44 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // ⬅️ Router import
+import axios from "axios";
 
 export default function LoginPage() {
+  const router = useRouter(); // ⬅️ Router init
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login data:", form);
-    // 🔹 Bu joyda siz API chaqirishingiz mumkin
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await axios.post("http://localhost:4000/auth/login", form);
+
+      console.log("✅ Login success:", res.data);
+
+      localStorage.setItem("token", res.data.access_token);
+
+      // 🔹 Home page (/ ) ga redirect
+      router.push("/");
+    } catch (err: any) {
+      console.error("❌ Login error:", err);
+      setError(err.response?.data?.message || "Noma’lum xatolik yuz berdi");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,12 +85,18 @@ export default function LoginPage() {
             />
           </div>
 
+          {/* Error message */}
+          {error && (
+            <p className="text-sm text-red-600 text-center">{error}</p>
+          )}
+
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition disabled:bg-blue-400"
           >
-            Login
+            {loading ? "Loading..." : "Login"}
           </button>
         </form>
 
